@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GK Quiz Challenge</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1c1c3c, #4a47a3);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: 'Arial', sans-serif;
+        }
+        .quiz-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+        }
+        .option {
+            display: block;
+            padding: 10px;
+            background: #6a89cc;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .option:hover {
+            background: #4a69bd;
+            transform: scale(1.05);
+        }
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff7675;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container animate__animated animate__fadeIn">
+        <h2>GK Quiz Challenge</h2>
+        <p class="timer">Time Left: <span id="time">30</span>s</p>
+        <h4 id="question">Loading...</h4>
+        <div id="options"></div>
+        <button class="btn btn-warning mt-3" onclick="nextQuestion()">Next</button>
+    </div>
+    <script>
+        const questions = [
+            { q: "What is the capital of France?", options: ["Paris", "Rome", "Berlin", "Madrid"], a: "Paris" },
+            { q: "Who wrote 'Hamlet'?", options: ["Shakespeare", "Hemingway", "Austen", "Tolkien"], a: "Shakespeare" },
+            { q: "What is the smallest planet in our solar system?", options: ["Mercury", "Mars", "Venus", "Earth"], a: "Mercury" },
+            { q: "Which gas do plants absorb from the atmosphere?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], a: "Carbon Dioxide" },
+            { q: "What is the chemical symbol for Gold?", options: ["Au", "Ag", "Pb", "Fe"], a: "Au" },
+            { q: "Which country invented pizza?", options: ["Italy", "France", "USA", "Greece"], a: "Italy" },
+            { q: "Which is the longest river in the world?", options: ["Amazon", "Nile", "Yangtze", "Mississippi"], a: "Nile" },
+            { q: "How many bones are there in an adult human body?", options: ["206", "205", "201", "209"], a: "206" },
+            { q: "Which planet is known as the Red Planet?", options: ["Mars", "Venus", "Jupiter", "Saturn"], a: "Mars" },
+            { q: "What is the hardest natural substance on Earth?", options: ["Gold", "Iron", "Diamond", "Platinum"], a: "Diamond" }
+        ];
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 30;
+        let timer;
+        
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                document.querySelector('.quiz-container').innerHTML = `<h2>Quiz Completed!</h2><p>Your Score: ${score}/10</p>`;
+                clearInterval(timer);
+                return;
+            }
+            document.getElementById('question').textContent = questions[currentQuestion].q;
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            questions[currentQuestion].options.forEach(option => {
+                const button = document.createElement('div');
+                button.classList.add('option');
+                button.textContent = option;
+                button.onclick = () => checkAnswer(option);
+                optionsContainer.appendChild(button);
+            });
+        }
+        
+        function checkAnswer(answer) {
+            if (answer === questions[currentQuestion].a) {
+                score++;
+            }
+            currentQuestion++;
+            loadQuestion();
+        }
+        
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+        
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('time').textContent = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(timer);
+                    document.querySelector('.quiz-container').innerHTML = `<h2>Time Up!</h2><p>Your Score: ${score}/10</p>`;
+                }
+            }, 1000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadQuestion();
+            startTimer();
+        });
+    </script>
+</body>
+</html>
